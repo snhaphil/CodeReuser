@@ -46,9 +46,10 @@ namespace CodeReuser
             get { return true; }
         }
 
-        public MsAzureCodeAction(SearchItem searchable, string bla)
+        public MsAzureCodeAction(SearchItem searchable, string queryResponse)
         {
-            _display = $"Found a {searchable.Type} named {searchable.Text} in msazure: {bla}, click to get result";
+            _display = $"Found 3 results for {searchable.Type}'s named '{searchable.Name}' in msazure, click to get result";
+            _link = queryResponse;
         }
 
         public Task<object> GetPreviewAsync(CancellationToken cancellationToken)
@@ -56,10 +57,10 @@ namespace CodeReuser
             var textBlock = new TextBlock();
             textBlock.Padding = new Thickness(3);
 
-            Hyperlink hl = new Hyperlink(new Run("Click Here"));
-            hl.Foreground = Brushes.Red;
+            Hyperlink hl = new Hyperlink(new Run(_link));
+            hl.Foreground = Brushes.Blue;
             hl.FontSize = 11;
-            hl.NavigateUri = new Uri("http://www.google.com");
+            hl.NavigateUri = new Uri("http://www.google.com"); // This is just a placeholder. The real link is what's executed in Hl_RequestNavigate
             hl.RequestNavigate += Hl_RequestNavigate;
 
             textBlock.Inlines.Add(hl);
@@ -69,7 +70,7 @@ namespace CodeReuser
 
         private void Hl_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
-            Process.Start("http://www.google.com");
+            Process.Start(_link);
         }
 
         public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)
@@ -95,7 +96,7 @@ namespace CodeReuser
 
         private ITrackingSpan _span;
         private string _display;
-        private string _textToSearch;
+        private string _link;
         private ITextSnapshot _snapshot;
     }
 }
