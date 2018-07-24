@@ -44,16 +44,16 @@ namespace CodeReuser
             get { return true; }
         }
 
-        public MsAzureCodeAction(SearchItem searchable)
+        public MsAzureCodeAction(SearchItem searchable, string bla)
         {
-            _display = $"Found a {searchable.Type} named {searchable.Text} in msazure, click to get result";
+            _display = $"Found a {searchable.Type} named {searchable.Text} in msazure: {bla}, click to get result";
         }
 
         public Task<object> GetPreviewAsync(CancellationToken cancellationToken)
         {
             var textBlock = new TextBlock();
             textBlock.Padding = new Thickness(3);
-            textBlock.Inlines.Add(new Run() { Text = "Not available until Snir solves his gay issues" });
+            textBlock.Inlines.Add(new Run() { Text = "Not available until Snir solves his issues" });
             return Task.FromResult<object>(textBlock);
         }
 

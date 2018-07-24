@@ -54,7 +54,7 @@
     <Compile Include="LineParser.cs" />
     <Compile Include="MsAzureClient.cs" />
     <Compile Include="MsAzureCodeAction.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Query.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchItem.cs" />
     <Compile Include="SearchType.cs" />
