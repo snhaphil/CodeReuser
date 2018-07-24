@@ -94,7 +94,7 @@ namespace CodeReuser
         public async Task<CodeSearchResponse> GetRecommendationAsync(SearchItem searchItem)
         {
             var query = new Query();
-            return await query.RunTextQueryAsync(searchItem);
+            return await query.RunTextQueryWithAstrixIfNotFoundAsync(searchItem);
         }
 
         private string CreateUri(CodeSearchResponse.SearchResultValue value)

@@ -5,6 +5,17 @@ namespace CodeReuser
 {
     class Query
     {
+        public async Task<CodeSearchResponse> RunTextQueryWithAstrixIfNotFoundAsync(SearchItem item)
+        {
+            var result = await RunTextQueryAsync(item);
+            if (result.Count == 0)
+            {
+                result = await RunTextQueryAsync(new SearchItem(item.Type, item.Name + "*"));
+            }
+
+            return result;
+        }
+
         public async Task<CodeSearchResponse> RunTextQueryAsync(SearchItem item)
         {
             try
@@ -36,9 +47,12 @@ namespace CodeReuser
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                return new CodeSearchResponse()
+                {
+                    Count = 0,
+                    ResultValues = new CodeSearchResponse.SearchResultValue[0]
+                };
             }
-
         }
     }
 }
