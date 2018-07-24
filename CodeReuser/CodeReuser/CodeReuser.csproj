@@ -51,7 +51,6 @@
     <Compile Include="CodeSearchFilters.cs" />
     <Compile Include="CodeSearchQuery.cs" />
     <Compile Include="CodeSearchResponse.cs" />
-    <Compile Include="IQuery.cs" />
     <Compile Include="LineParser.cs" />
     <Compile Include="MsAzureCodeAction.cs" />
     <Compile Include="Query.cs" />

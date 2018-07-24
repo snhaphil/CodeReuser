@@ -46,10 +46,10 @@ namespace CodeReuser
             get { return true; }
         }
 
-        public MsAzureCodeAction(SearchItem searchable, string queryResponse)
+        public MsAzureCodeAction(SearchItem searchable, string fileName, string link)
         {
-            _display = $"Found 3 results for {searchable.Type}'s named '{searchable.Name}' in msazure, click to get result";
-            _link = queryResponse;
+            _display = $"Found result in file:{fileName} for {searchable.Type}'s named '{searchable.Name}' in msazure";
+            _link = link;
         }
 
         public Task<object> GetPreviewAsync(CancellationToken cancellationToken)
