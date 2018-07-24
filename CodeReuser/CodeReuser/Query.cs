@@ -3,17 +3,24 @@ using System.Threading.Tasks;
 
 namespace CodeReuser
 {
-    class Query
+    class Query : IQuery
     {
-        public static string RunQueryAsync(string text)
+        public CodeSearchResponse RunCodeElementQuery(SearchItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CodeSearchResponse RunTextQuery(SearchItem item)
         {
             try
             {
+                return new CodeSearchResponse();
+                /*
                 VisualStudioCodeSearchHelper vsoSearch = new VisualStudioCodeSearchHelper();
                 var searchResults = vsoSearch.RunSearchQueryAsync(
                     new CodeSearchQuery
                     {
-                        SearchText = text,
+                        SearchText = item.Text,
                         QuerySearchFilters = new CodeSearchFilters
                         {
                             Project = new string[] { "One" },
@@ -22,7 +29,7 @@ namespace CodeReuser
                         TakeResults = 100
                     }).Result;
                 Console.WriteLine(searchResults.Count);
-                return searchResults.ResultValues[0]?.FileName;
+                return searchResults;*/
             }
             catch (Exception e)
             {
