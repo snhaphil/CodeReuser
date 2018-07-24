@@ -8,20 +8,26 @@ namespace CodeReuser
 {
     public class SearchItem
     {
-        public SearchItem(SearchType type, string text)
+        public SearchItem(SearchType type, string name)
         {
             Type = type;
-            Text = text;
+            Name = name;
+        }
+
+        public SearchItem(SearchItem item)
+        {
+            Type = item.Type;
+            Name = item.Name;
         }
 
         public SearchType Type;
-        public string Text;
+        public string Name;
 
         public static SearchItem EmptySearchItem = new SearchItem(SearchType.None, string.Empty);
 
         public bool IsEmpty()
         {
-            return Type == EmptySearchItem.Type && Text == EmptySearchItem.Text;
+            return Type == EmptySearchItem.Type && Name == EmptySearchItem.Name;
         }
     }
 }

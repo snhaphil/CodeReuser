@@ -25,21 +25,27 @@ namespace CodeReuser
             m_textView = textView;
         }
 
-        public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
+        public async Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            return Task.Factory.StartNew(() =>
+            var line = range.GetText();
+            var query = new Query();
+            if (LineParser.IsSearchable(line))
             {
-                if (LineParser.IsSearchable(range.GetText()))
+                _searchItem = LineParser.GetSearchableItem(line);
+                if (!_searchItem.IsEmpty())
                 {
+                    _queryAnswer = await GetRecommendationAsync();
                     return true;
                 }
+            }
 
-                return false;
-            });
+
+            return false;
         }
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
+            /*
             var line = range.GetText();
             var query = new Query();
             if (LineParser.IsSearchable(line))
@@ -52,7 +58,21 @@ namespace CodeReuser
                     return new SuggestedActionSet[] { new SuggestedActionSet(new ISuggestedAction[] { reuseAction }) };
                 }
             }
+            */
 
+            if (_queryAnswer.Length > 0)
+            {
+                // Copy items
+                var searchItem = new SearchItem(_searchItem);
+                var queryAnswer = _queryAnswer;
+
+                // Reset
+                _queryAnswer = string.Empty;
+                _searchItem = SearchItem.EmptySearchItem;
+
+                return new SuggestedActionSet[] { new SuggestedActionSet(new ISuggestedAction[] { new MsAzureCodeAction(searchItem, string.Concat("https://www.", searchItem.Type, searchItem.Name, ".com")) }) };
+            }
+            
             return Enumerable.Empty<SuggestedActionSet>();
         }
 
@@ -67,8 +87,22 @@ namespace CodeReuser
             return false;
         }
 
+        public async Task<string> GetRecommendationAsync()
+        {
+            var client = new HttpClient();
+            HttpResponseMessage response = await client.GetAsync("https://jsonplaceholder.typicode.com/posts/1");
+            if (response.IsSuccessStatusCode)
+            {
+                return (await response.Content.ReadAsStringAsync()).Substring(0, 10);
+            }
+
+            return string.Empty;
+        }
+
         private readonly TestSuggestedActionsSourceProvider m_factory;
         private readonly ITextBuffer m_textBuffer;
         private readonly ITextView m_textView;
+        private string _queryAnswer;
+        private SearchItem _searchItem = SearchItem.EmptySearchItem;
     }
 }
