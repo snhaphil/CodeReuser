@@ -10,14 +10,22 @@ namespace CodeReuser
             try
             {
                 VisualStudioCodeSearchHelper vsoSearch = new VisualStudioCodeSearchHelper();
+                if (item.IsEmpty())
+                {
+                    return new CodeSearchResponse()
+                    {
+                        Count = 0,
+                        ResultValues = new CodeSearchResponse.SearchResultValue[0]
+                    };
+                }
+                var prefix = item.Type.ToString().ToLower();
                 var searchResults = await vsoSearch.RunSearchQueryAsync(
                     new CodeSearchQuery
                     {
-                        SearchText = item.Name,
+                        SearchText = $"{prefix}:{item.Name}",
                         QuerySearchFilters = new CodeSearchFilters
                         {
                             Project = new string[] { "One" },
-                            CodeElement = new string[] { item.Type == SearchType.None ? "Def" : item.Type.ToString()   }
                         },
                         SkipResults = 0,
                         TakeResults = 100
