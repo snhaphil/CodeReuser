@@ -3,19 +3,14 @@ using System.Threading.Tasks;
 
 namespace CodeReuser
 {
-    class Program
+    class Query
     {
-        static void Main(string[] args)
-        {
-            RunQueryAsync("Va").Wait();
-        }
-
-        private static async Task RunQueryAsync(string text)
+        public static string RunQueryAsync(string text)
         {
             try
             {
                 VisualStudioCodeSearchHelper vsoSearch = new VisualStudioCodeSearchHelper();
-                var searchResults = await vsoSearch.RunSearchQueryAsync(
+                var searchResults = vsoSearch.RunSearchQueryAsync(
                     new CodeSearchQuery
                     {
                         SearchText = text,
@@ -25,8 +20,9 @@ namespace CodeReuser
                         },
                         SkipResults = 0,
                         TakeResults = 100
-                    }).ConfigureAwait(false);
+                    }).Result;
                 Console.WriteLine(searchResults.Count);
+                return searchResults.ResultValues[0]?.FileName;
             }
             catch (Exception e)
             {
