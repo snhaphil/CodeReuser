@@ -20,6 +20,7 @@ namespace CodeReuser
 
         public TestSuggestedActionsSource(TestSuggestedActionsSourceProvider testSuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer)
         {
+            m_recommendations = new Recommendations();
             m_factory = testSuggestedActionsSourceProvider;
             m_textBuffer = textBuffer;
             m_textView = textView;
@@ -43,21 +44,6 @@ namespace CodeReuser
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            /*
-            var line = range.GetText();
-            var query = new Query();
-            if (LineParser.IsSearchable(line))
-            {
-                var searchableItem = LineParser.GetSearchableItem(line);
-                if (!searchableItem.IsEmpty())
-                {
-                    var response = query.RunTextQuery(searchableItem);
-                    var reuseAction = new MsAzureCodeAction(searchableItem, "test");
-                    return new SuggestedActionSet[] { new SuggestedActionSet(new ISuggestedAction[] { reuseAction }) };
-                }
-            }
-            */
-
             if ((_queryAnswer?.Count ?? 0) > 0)
             {
                 // Copy items
@@ -71,7 +57,7 @@ namespace CodeReuser
                 var actions = new List<SuggestedActionSet>();
                 foreach (var searchResultValue in (queryAnswer?.ResultValues.Take(10) ?? Enumerable.Empty<CodeSearchResponse.SearchResultValue>()))
                 {
-                    actions.Add(new SuggestedActionSet(new ISuggestedAction[] { new MsAzureCodeAction(searchItem, searchResultValue.FileName, CreateUri(searchResultValue)) }));
+                    actions.Add(new SuggestedActionSet(new ISuggestedAction[] { new MsAzureCodeAction(searchResultValue.Repository.Name, searchResultValue.FileName, CreateUri(searchResultValue)) }));
                 }
 
                 return actions;
@@ -108,5 +94,6 @@ namespace CodeReuser
         private readonly ITextView m_textView;
         private CodeSearchResponse _queryAnswer;
         private SearchItem _searchItem = SearchItem.EmptySearchItem;
+        private Recommendations m_recommendations;
     }
 }

@@ -46,9 +46,9 @@ namespace CodeReuser
             get { return true; }
         }
 
-        public MsAzureCodeAction(SearchItem searchable, string fileName, string link)
+        public MsAzureCodeAction(string repo, string fileName, string link)
         {
-            _display = $"Found result in file:{fileName} for {searchable.Type}'s named '{searchable.Name}' in msazure";
+            _display = $"Found result in file:{fileName} under repo:{repo}";
             _link = link;
         }
 
