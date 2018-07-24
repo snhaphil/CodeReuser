@@ -50,7 +50,7 @@ namespace CodeReuser
 
         public static Dictionary<SearchType, string> CIdentifiers = new Dictionary<SearchType, string>()
         {
-            { SearchType.Method, @"\s+([A-Za-z]+)\(([A-Za-z\s+]+)\)" },
+            { SearchType.Method, @"\s+([A-Za-z]+)\(([A-Za-z\s\,*]*)\)" },
             { SearchType.Class, @"class\s+([A-Za-z]+)" },
             { SearchType.Interface, @"interface\s+([A-Za-z]+)" },
         };
