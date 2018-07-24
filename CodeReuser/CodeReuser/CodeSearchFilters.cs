@@ -23,18 +23,18 @@ namespace CodeReuser
         /// Gets or sets list of branches to scope search to.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string[] BranchFilters { get; set; }
+        public string[] Branch { get; set; }
 
         /// <summary>
         /// Gets or sets list of code elements to scope search to, ie class names.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string[] CodeElementFilters { get; set; }
+        public string[] CodeElement { get; set; }
 
         /// <summary>
         /// Gets or sets list of paths to scope search to.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string[] PathFilters { get; set; }
+        public string[] Path { get; set; }
     }
 }

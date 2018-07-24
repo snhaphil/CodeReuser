@@ -27,10 +27,12 @@ namespace CodeReuser
             if (!basicHttpClientCache.ContainsKey(cacheKey))
             {
                 var httpClient = new HttpClient();
+                var provider = new MicrosoftLoginAuthorizationHeaderProvider();
 
+                var header = provider.GetAsync().Result;
                 httpClient.BaseAddress = uri;
                 httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "");
+                httpClient.DefaultRequestHeaders.Authorization = header;
 
                 basicHttpClientCache.TryAdd(uri.OriginalString, httpClient);
             }
