@@ -14,8 +14,6 @@ namespace CodeReuser
         {
             try
             {
-                return new CodeSearchResponse();
-                /*
                 VisualStudioCodeSearchHelper vsoSearch = new VisualStudioCodeSearchHelper();
                 var searchResults = vsoSearch.RunSearchQueryAsync(
                     new CodeSearchQuery
@@ -29,7 +27,7 @@ namespace CodeReuser
                         TakeResults = 100
                     }).Result;
                 Console.WriteLine(searchResults.Count);
-                return searchResults;*/
+                return searchResults;
             }
             catch (Exception e)
             {

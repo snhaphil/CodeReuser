@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
@@ -28,7 +29,8 @@ namespace CodeReuser
 
             try
             {
-                result = await _authenticationContext.AcquireTokenSilentAsync(CVSTSResourceId, CClientId);
+                var silentTask = await _authenticationContext.AcquireTokenAsync(CVSTSResourceId, CClientId, SReplyUri, new PlatformParameters(PromptBehavior.Auto));
+                return new AuthenticationHeaderValue("Bearer", silentTask.AccessToken);
             }
             catch (AdalException adalException)
             {
