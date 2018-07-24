@@ -41,13 +41,14 @@ namespace CodeReuser
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
             var line = range.GetText();
+            var query = new Query();
             if (LineParser.IsSearchable(line))
             {
                 var searchableItem = LineParser.GetSearchableItem(line);
                 if (!searchableItem.IsEmpty())
                 {
-                    var toDisplay = Query.RunQueryAsync(searchableItem.Text);
-                    var reuseAction = new MsAzureCodeAction(searchableItem, toDisplay);
+                    var response = query.RunTextQuery(searchableItem);
+                    var reuseAction = new MsAzureCodeAction(searchableItem, "test");
                     return new SuggestedActionSet[] { new SuggestedActionSet(new ISuggestedAction[] { reuseAction }) };
                 }
             }

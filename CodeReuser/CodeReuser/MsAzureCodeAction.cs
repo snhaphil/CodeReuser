@@ -3,11 +3,13 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace CodeReuser
 {
@@ -53,8 +55,21 @@ namespace CodeReuser
         {
             var textBlock = new TextBlock();
             textBlock.Padding = new Thickness(3);
-            textBlock.Inlines.Add(new Run() { Text = "Not available until Snir solves his issues" });
+
+            Hyperlink hl = new Hyperlink(new Run("Click Here"));
+            hl.Foreground = Brushes.Red;
+            hl.FontSize = 11;
+            hl.NavigateUri = new Uri("http://www.google.com");
+            hl.RequestNavigate += Hl_RequestNavigate;
+
+            textBlock.Inlines.Add(hl);
+
             return Task.FromResult<object>(textBlock);
+        }
+
+        private void Hl_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start("http://www.google.com");
         }
 
         public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)
@@ -78,7 +93,6 @@ namespace CodeReuser
             return false;
         }
 
-        private MsAzureClient _client;
         private ITrackingSpan _span;
         private string _display;
         private string _textToSearch;
