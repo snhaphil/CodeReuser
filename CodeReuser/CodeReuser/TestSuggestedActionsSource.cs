@@ -16,6 +16,13 @@ namespace CodeReuser
 {
     internal class TestSuggestedActionsSource : ISuggestedActionsSource
     {
+        static TestSuggestedActionsSource()
+        {
+            Task.Run(() =>
+            {
+                VisualStudioHttpClientPool.GetBasicHttpClient(new Uri("https://msazure.visualstudio.com/one/_apis/git/repositories/"));
+            });
+        }
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
         public TestSuggestedActionsSource(TestSuggestedActionsSourceProvider testSuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer)

@@ -58,11 +58,13 @@ namespace CodeReuser
 
         public async Task<object> GetPreviewAsync(CancellationToken cancellationToken)
         {
-            var stackPanel = new Grid();
-            stackPanel.RowDefinitions.Add(new RowDefinition());
-            stackPanel.RowDefinitions.Add(new RowDefinition());
-            stackPanel.RowDefinitions.Add(new RowDefinition());
-            stackPanel.RowDefinitions.Add(new RowDefinition());
+            ScrollViewer scroll = new ScrollViewer()
+            {
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
+            };
+
+            var stackPanel = new StackPanel();
 
             var sourceFile = await new VisualStudioCodeSearchHelper().DownloadSourceFileAsync(_repo, _path);
 
@@ -73,7 +75,9 @@ namespace CodeReuser
                 Text = sourceFile.Content,
                 BorderThickness = new Thickness(5),
                 BorderBrush = Brushes.Black,
-                SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C#")
+                SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C#"),
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Hidden
             };
 
             textEditor.MouseLeave += (sender, args) => ((ICSharpCode.AvalonEdit.TextEditor)sender).Copy();
@@ -117,15 +121,11 @@ namespace CodeReuser
             linkTextBlock.Inlines.Add(hl);
 
             stackPanel.Children.Add(repoTextBlock);
-            Grid.SetRow(repoTextBlock, 0);
-            stackPanel.Children.Add(namespaceTextBlock);
-            Grid.SetRow(namespaceTextBlock, 1);
             stackPanel.Children.Add(linkTextBlock);
-            Grid.SetRow(linkTextBlock, 2);
+            stackPanel.Children.Add(namespaceTextBlock);
             stackPanel.Children.Add(textEditor);
-            Grid.SetRow(textEditor, 3);
-
-            return stackPanel;
+            scroll.Content = stackPanel;
+            return scroll;
         }
 
         public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)

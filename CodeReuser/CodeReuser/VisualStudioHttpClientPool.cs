@@ -27,9 +27,8 @@ namespace CodeReuser
             if (!basicHttpClientCache.ContainsKey(cacheKey))
             {
                 var httpClient = new HttpClient();
-                var provider = new MicrosoftLoginAuthorizationHeaderProvider();
 
-                var header = provider.GetAsync().Result;
+                var header = MicrosoftLoginAuthorizationHeaderProvider.Instance.GetAsync().Result;
                 httpClient.BaseAddress = uri;
                 httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
                 httpClient.DefaultRequestHeaders.Authorization = header;

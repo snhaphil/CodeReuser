@@ -44,7 +44,7 @@ namespace CodeReuser
                             Project = new string[] { "One" },
                         },
                         SkipResults = 0,
-                        TakeResults = 100
+                        TakeResults = 5
                     });
                 Console.WriteLine(searchResults.Count);
                 return searchResults;
