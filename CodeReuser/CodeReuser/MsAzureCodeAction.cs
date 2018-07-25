@@ -58,7 +58,9 @@ namespace CodeReuser
 
         public async Task<object> GetPreviewAsync(CancellationToken cancellationToken)
         {
-            var stackPanel = new StackPanel();
+            var stackPanel = new Grid();
+            stackPanel.RowDefinitions.Add(new RowDefinition());
+            stackPanel.RowDefinitions.Add(new RowDefinition());
 
             var sourceFile = await new VisualStudioCodeSearchHelper().DownloadSourceFileAsync(_repo, _path);
 
@@ -69,11 +71,10 @@ namespace CodeReuser
                 BorderThickness = new Thickness(20),
                 BorderBrush = Brushes.Black,
                 SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C#")
-        };
+            };
 
             textEditor.MouseLeave += (sender, args) => ((ICSharpCode.AvalonEdit.TextEditor)sender).Copy();
             SearchPanel.Install(textEditor);
-
 
             // TODO: replace ...
             var textBlock = new TextBlock();
@@ -86,8 +87,12 @@ namespace CodeReuser
             hl.RequestNavigate += Hl_RequestNavigate;
             textBlock.Inlines.Add(hl);
 
+
             stackPanel.Children.Add(textBlock);
+            Grid.SetRow(textBlock, 0);
+
             stackPanel.Children.Add(textEditor);
+            Grid.SetRow(textEditor, 1);
 
             return stackPanel;
         }
