@@ -58,7 +58,9 @@ namespace CodeReuser
 
         public async Task<object> GetPreviewAsync(CancellationToken cancellationToken)
         {
-            var stackPanel = new StackPanel();
+            var stackPanel = new Grid();
+            stackPanel.RowDefinitions.Add(new RowDefinition());
+            stackPanel.RowDefinitions.Add(new RowDefinition());
 
             var sourceFile = await new VisualStudioCodeSearchHelper().DownloadSourceFileAsync(_repo, _path);
 
@@ -103,9 +105,13 @@ namespace CodeReuser
             linkTextBlock.Inlines.Add(hl);
 
             stackPanel.Children.Add(repoTextBlock);
+            Grid.SetRow(repoTextBlock, 0);
             stackPanel.Children.Add(namespaceTextBlock);
+            Grid.SetRow(namespaceTextBlock, 1);
             stackPanel.Children.Add(linkTextBlock);
+            Grid.SetRow(linkTextBlock, 2);
             stackPanel.Children.Add(textEditor);
+            Grid.SetRow(textEditor, 3);
 
             return stackPanel;
         }
