@@ -20,6 +20,7 @@ namespace CodeReuser
 
         public TestSuggestedActionsSource(TestSuggestedActionsSourceProvider testSuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer)
         {
+            m_query = new Query();
             m_recommendations = new Recommendations();
             m_factory = testSuggestedActionsSourceProvider;
             m_textBuffer = textBuffer;
@@ -31,11 +32,12 @@ namespace CodeReuser
             var line = range.GetText();
             if (LineParser.IsSearchable(line))
             {
-                _searchItem = LineParser.GetSearchableItem(line);
-                if (!_searchItem.IsEmpty())
+                var searchItem = LineParser.GetSearchableItem(line);
+                if (!searchItem.IsEmpty())
                 {
-                    _queryAnswer = await GetRecommendationAsync(_searchItem);
-                    return true;
+                    var queryResponse = await m_query.RunTextQueryAsync(searchItem);
+                    m_recommendations.UpdateRecommendations(searchItem, queryResponse);
+                    return m_recommendations.HasRecommendation();
                 }
             }
 
@@ -44,26 +46,8 @@ namespace CodeReuser
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
         {
-            if ((_queryAnswer?.Count ?? 0) > 0)
-            {
-                // Copy items
-                var searchItem = new SearchItem(_searchItem);
-                var queryAnswer = _queryAnswer;
-
-                // Reset
-                _queryAnswer = null;
-                _searchItem = SearchItem.EmptySearchItem;
-
-                var actions = new List<SuggestedActionSet>();
-                foreach (var searchResultValue in (queryAnswer?.ResultValues.Take(10) ?? Enumerable.Empty<CodeSearchResponse.SearchResultValue>()))
-                {
-                    actions.Add(new SuggestedActionSet(new ISuggestedAction[] { new MsAzureCodeAction(searchResultValue.Repository.Name, searchResultValue.FileName, CreateUri(searchResultValue)) }));
-                }
-
-                return actions;
-            }
-            
-            return Enumerable.Empty<SuggestedActionSet>();
+            var ret = m_recommendations.GetRecommendations().ToList();
+            return ret;
         }
 
         public void Dispose()
@@ -77,23 +61,10 @@ namespace CodeReuser
             return false;
         }
 
-        public async Task<CodeSearchResponse> GetRecommendationAsync(SearchItem searchItem)
-        {
-            var query = new Query();
-            return await query.RunTextQueryWithAstrixIfNotFoundAsync(searchItem);
-        }
-
-        private string CreateUri(CodeSearchResponse.SearchResultValue value)
-        {
-            var path = value.Path.Replace("/", "%2F");
-            return $"https://msazure.visualstudio.com/{value.Project.Name}/_git/{value.Repository.Name}?path={path}";
-        }
-
         private readonly TestSuggestedActionsSourceProvider m_factory;
         private readonly ITextBuffer m_textBuffer;
         private readonly ITextView m_textView;
-        private CodeSearchResponse _queryAnswer;
-        private SearchItem _searchItem = SearchItem.EmptySearchItem;
         private Recommendations m_recommendations;
+        private Query m_query;
     }
 }
