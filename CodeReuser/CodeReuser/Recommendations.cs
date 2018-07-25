@@ -58,7 +58,8 @@ namespace CodeReuser
         private int GetScore(SearchItem searchItem)
         {
             var scoreByType = searchItem.Type == SearchType.Method ? Score : 20;
-            return searchItem.Accuracy == SearchAccuracy.Accurate ? scoreByType * 2 : scoreByType;
+            var scoreByAccuracy = searchItem.Accuracy == SearchAccuracy.Accurate ? scoreByType * 2 : scoreByType;
+            return scoreByAccuracy + _items.Count; // prefer the latest results
         }
 
         private void CleanIfNeeded(SearchItem searchItem)

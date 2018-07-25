@@ -31,6 +31,10 @@ namespace CodeReuser
             var httpContent = new StringContent(requestString, Encoding.UTF8, "application/json");
 
             var response = await this.CodeSearchHttpClient.PostAsync(string.Empty, httpContent).ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode)
+            {
+                return CodeSearchResponse.Empty;
+            }
 
             var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var responseObject = (CodeSearchResponse)JsonConvert.DeserializeObject(responseString, typeof(CodeSearchResponse));

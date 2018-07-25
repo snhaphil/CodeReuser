@@ -8,6 +8,12 @@ namespace CodeReuser
     /// </summary>
     public class CodeSearchResponse
     {
+        public static CodeSearchResponse Empty => new CodeSearchResponse
+        {
+            Count = 0,
+            ResultValues = new SearchResultValue[0]
+        };
+
         /// <summary>
         /// Gets or sets count of results.
         /// </summary>

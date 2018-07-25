@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace CodeReuser
 {
@@ -30,17 +32,13 @@ namespace CodeReuser
             {
                 if (item.IsEmpty())
                 {
-                    return new CodeSearchResponse()
-                    {
-                        Count = 0,
-                        ResultValues = new CodeSearchResponse.SearchResultValue[0]
-                    };
+                    return CodeSearchResponse.Empty;
                 }
                 var prefix = item.Type.ToString().ToLower();
                 var searchResults = await _vsoSearch.Value.RunSearchQueryAsync(
                     new CodeSearchQuery
                     {
-                        SearchText = $"{prefix}:{item.Name}",
+                        SearchText = $"{prefix}:{item.Name} ext:cs",
                         QuerySearchFilters = new CodeSearchFilters
                         {
                             Project = new string[] { "One" },
@@ -54,11 +52,7 @@ namespace CodeReuser
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new CodeSearchResponse()
-                {
-                    Count = 0,
-                    ResultValues = new CodeSearchResponse.SearchResultValue[0]
-                };
+                return CodeSearchResponse.Empty;
             }
         }
     }
