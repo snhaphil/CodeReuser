@@ -62,6 +62,7 @@ namespace CodeReuser
 
             var sourceFile = await new VisualStudioCodeSearchHelper().DownloadSourceFileAsync(_repo, _path);
 
+            // Code text editor
             var textEditor = new ICSharpCode.AvalonEdit.TextEditor()
             {
                 IsReadOnly = true,
@@ -69,24 +70,41 @@ namespace CodeReuser
                 BorderThickness = new Thickness(20),
                 BorderBrush = Brushes.Black,
                 SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C#")
-        };
+            };
 
             textEditor.MouseLeave += (sender, args) => ((ICSharpCode.AvalonEdit.TextEditor)sender).Copy();
             SearchPanel.Install(textEditor);
 
+            // Repository text block
+            var repoTextBlock = new TextBlock();
+            repoTextBlock.Padding = new Thickness(3);
+            repoTextBlock.Text = $"Repository: {_repo}";
 
-            // TODO: replace ...
-            var textBlock = new TextBlock();
-            textBlock.Padding = new Thickness(3);
+            // Namespace text block 
+            var namespaceTextBlock = new TextBlock();
+            namespaceTextBlock.Padding = new Thickness(3);
+            namespaceTextBlock.Text = $"Namespace: {sourceFile.Namespace}";
+
+            // Link text block
+            var linkTextBlock = new TextBlock();
+            linkTextBlock.Padding = new Thickness(3);
+
+            var linkText = new TextBlock();
+            linkText.Padding = new Thickness(3);
+            linkText.Text = "Link: ";
 
             Hyperlink hl = new Hyperlink(new Run(_fileLink));
             hl.Foreground = Brushes.Blue;
             hl.FontSize = 11;
             hl.NavigateUri = new Uri("http://www.google.com"); // This is just a placeholder. The real link is what's executed in Hl_RequestNavigate
             hl.RequestNavigate += Hl_RequestNavigate;
-            textBlock.Inlines.Add(hl);
 
-            stackPanel.Children.Add(textBlock);
+            linkTextBlock.Inlines.Add(linkText);
+            linkTextBlock.Inlines.Add(hl);
+
+            stackPanel.Children.Add(repoTextBlock);
+            stackPanel.Children.Add(namespaceTextBlock);
+            stackPanel.Children.Add(linkTextBlock);
             stackPanel.Children.Add(textEditor);
 
             return stackPanel;

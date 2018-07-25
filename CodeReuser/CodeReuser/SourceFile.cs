@@ -16,7 +16,7 @@ namespace CodeReuser
 
         public string Content { get; set; }
 
-        public string Namespace => _namespace ?? (_namespace = Regex.Match(Content, "\\nnamespace ([a-zA-Z0-9]+)\\n").Groups[1].Value);
+        public string Namespace => _namespace ?? (_namespace = Regex.Match(Content, "\\nnamespace ([a-zA-Z0-9.]+)\\n").Groups[1].Value);
 
         [JsonProperty("_links")]
         public Links Links { get; set; }
