@@ -5,12 +5,20 @@ namespace CodeReuser
 {
     class Query
     {
+        private Lazy<VisualStudioCodeSearchHelper> _vsoSearch;
+
+        public Query()
+        {
+            _vsoSearch = new Lazy<VisualStudioCodeSearchHelper>(() => new VisualStudioCodeSearchHelper());
+        }
+
         public async Task<CodeSearchResponse> RunTextQueryWithAstrixIfNotFoundAsync(SearchItem item)
         {
             var result = await RunTextQueryAsync(item);
             if (result.Count == 0)
             {
                 result = await RunTextQueryAsync(new SearchItem(item.Type, item.Name + "*"));
+                item.Accuracy = SearchAccuracy.Astrix;
             }
 
             return result;
@@ -20,7 +28,6 @@ namespace CodeReuser
         {
             try
             {
-                VisualStudioCodeSearchHelper vsoSearch = new VisualStudioCodeSearchHelper();
                 if (item.IsEmpty())
                 {
                     return new CodeSearchResponse()
@@ -30,7 +37,7 @@ namespace CodeReuser
                     };
                 }
                 var prefix = item.Type.ToString().ToLower();
-                var searchResults = await vsoSearch.RunSearchQueryAsync(
+                var searchResults = await _vsoSearch.Value.RunSearchQueryAsync(
                     new CodeSearchQuery
                     {
                         SearchText = $"{prefix}:{item.Name}",

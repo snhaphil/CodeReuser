@@ -20,11 +20,11 @@ namespace CodeReuser
 
         public TestSuggestedActionsSource(TestSuggestedActionsSourceProvider testSuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer)
         {
-            m_query = new Query();
             m_recommendations = new Recommendations();
             m_factory = testSuggestedActionsSourceProvider;
             m_textBuffer = textBuffer;
             m_textView = textView;
+            m_query = new Query();
         }
 
         public async Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ namespace CodeReuser
                 var searchItem = LineParser.GetSearchableItem(line);
                 if (!searchItem.IsEmpty())
                 {
-                    var queryResponse = await m_query.RunTextQueryAsync(searchItem);
+                    var queryResponse = await m_query.RunTextQueryWithAstrixIfNotFoundAsync(searchItem);
                     m_recommendations.UpdateRecommendations(searchItem, queryResponse);
                     return m_recommendations.HasRecommendation();
                 }
