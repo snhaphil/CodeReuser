@@ -57,6 +57,7 @@
     <Compile Include="IAuthorizationHeaderProvider.cs" />
     <Compile Include="MicrosoftLoginAuthorizationHeaderProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Recommendations.cs" />
     <Compile Include="SearchItem.cs" />
     <Compile Include="SearchType.cs" />
     <Compile Include="TestSuggestedActionsSource.cs" />
