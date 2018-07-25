@@ -4,14 +4,17 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Threading;
 
 namespace CodeReuser
 {
     public class VisualStudioWorkItemHelper
     {
+
         public Uri TeamUri { get; private set; }
 
         public string ProjectName { get; private set; }

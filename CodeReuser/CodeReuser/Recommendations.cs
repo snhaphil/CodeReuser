@@ -137,17 +137,22 @@ namespace CodeReuser
         public RecommendationItem(int score, CodeSearchResponse.SearchResultValue searchResultValue)
         {
             Score = score;
-            SuggestedActionSet = new SuggestedActionSet(new ISuggestedAction[] { new MsAzureCodeAction(searchResultValue.Repository.Name, searchResultValue.FileName, CreateUri(searchResultValue))});
+            SuggestedActionSet = new SuggestedActionSet(new ISuggestedAction[] { new MsAzureCodeAction(searchResultValue.Repository.Name, searchResultValue.FileName, searchResultValue.Path, CreateFileUri(searchResultValue), CreateRepoUri(searchResultValue))});
         }
 
         public int Score { get; set; }
 
         public SuggestedActionSet SuggestedActionSet { get; set; }
 
-        private string CreateUri(CodeSearchResponse.SearchResultValue value)
+        private string CreateFileUri(CodeSearchResponse.SearchResultValue value)
         {
             var path = value.Path.Replace("/", "%2F");
-            return $"https://msazure.visualstudio.com/{value.Project.Name}/_git/{value.Repository.Name}?path={path}";
+            return $"{CreateRepoUri(value)}/?path={path}";
+        }
+
+        private string CreateRepoUri(CodeSearchResponse.SearchResultValue value)
+        {
+            return $"https://msazure.visualstudio.com/{value.Project.Name}/_git/{value.Repository.Name}";
         }
     }
 }
