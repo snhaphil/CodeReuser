@@ -18,11 +18,9 @@ namespace CodeReuser
     {
         static TestSuggestedActionsSource()
         {
-            Task.Run(() =>
-            {
-                VisualStudioHttpClientPool.GetBasicHttpClient(new Uri("https://msazure.visualstudio.com/one/_apis/git/repositories/"));
-            });
+            Task.Run(() => MicrosoftLoginAuthorizationHeaderProvider.Instance.GetAsync());
         }
+
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
         public TestSuggestedActionsSource(TestSuggestedActionsSourceProvider testSuggestedActionsSourceProvider, ITextView textView, ITextBuffer textBuffer)

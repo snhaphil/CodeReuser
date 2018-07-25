@@ -11,7 +11,7 @@ namespace CodeReuser
     {
         public static MicrosoftLoginAuthorizationHeaderProvider Instance => new MicrosoftLoginAuthorizationHeaderProvider();
 
-        public MicrosoftLoginAuthorizationHeaderProvider()
+        private MicrosoftLoginAuthorizationHeaderProvider()
         {
             var ctx = new AuthenticationContext("https://login.windows.net/common");
 
