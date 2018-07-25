@@ -7,7 +7,8 @@ namespace CodeReuser
     public class SourceFile
     {
 
-        public ContentMetadata Metadata { get; set; }
+        public ContentMetadata ContentMetadata { get; set; }
+
         public string ObjectId { get; set; }
 
         public string GitObjectType { get; set; }

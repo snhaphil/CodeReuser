@@ -61,6 +61,8 @@ namespace CodeReuser
             var stackPanel = new Grid();
             stackPanel.RowDefinitions.Add(new RowDefinition());
             stackPanel.RowDefinitions.Add(new RowDefinition());
+            stackPanel.RowDefinitions.Add(new RowDefinition());
+            stackPanel.RowDefinitions.Add(new RowDefinition());
 
             var sourceFile = await new VisualStudioCodeSearchHelper().DownloadSourceFileAsync(_repo, _path);
 
@@ -69,7 +71,7 @@ namespace CodeReuser
             {
                 IsReadOnly = true,
                 Text = sourceFile.Content,
-                BorderThickness = new Thickness(20),
+                BorderThickness = new Thickness(5),
                 BorderBrush = Brushes.Black,
                 SyntaxHighlighting = ICSharpCode.AvalonEdit.Highlighting.HighlightingManager.Instance.GetDefinition("C#")
             };
@@ -79,8 +81,18 @@ namespace CodeReuser
 
             // Repository text block
             var repoTextBlock = new TextBlock();
-            repoTextBlock.Padding = new Thickness(3);
-            repoTextBlock.Text = $"Repository: {_repo}";
+            var repoText = new TextBlock();
+            repoText.Padding = new Thickness(3);
+            repoText.Text = $"Repository: ";
+
+            Hyperlink hl = new Hyperlink(new Run(_repo));
+            hl.Foreground = Brushes.Blue;
+            hl.FontSize = 11;
+            hl.NavigateUri = new Uri("http://www.google.com"); // This is just a placeholder. The real link is what's executed in Hl_RequestNavigate
+            hl.RequestNavigate += (s, e) => Process.Start(_repoLink);
+
+            repoTextBlock.Inlines.Add(repoText);
+            repoTextBlock.Inlines.Add(hl);
 
             // Namespace text block 
             var namespaceTextBlock = new TextBlock();
@@ -93,13 +105,13 @@ namespace CodeReuser
 
             var linkText = new TextBlock();
             linkText.Padding = new Thickness(3);
-            linkText.Text = "Link: ";
+            linkText.Text = "File: ";
 
-            Hyperlink hl = new Hyperlink(new Run(_fileLink));
+            hl = new Hyperlink(new Run(sourceFile.ContentMetadata.FileName));
             hl.Foreground = Brushes.Blue;
             hl.FontSize = 11;
             hl.NavigateUri = new Uri("http://www.google.com"); // This is just a placeholder. The real link is what's executed in Hl_RequestNavigate
-            hl.RequestNavigate += Hl_RequestNavigate;
+            hl.RequestNavigate += (s ,e) => Process.Start(_fileLink);
 
             linkTextBlock.Inlines.Add(linkText);
             linkTextBlock.Inlines.Add(hl);
@@ -114,11 +126,6 @@ namespace CodeReuser
             Grid.SetRow(textEditor, 3);
 
             return stackPanel;
-        }
-
-        private void Hl_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-        {
-            Process.Start(_fileLink);
         }
 
         public Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken)
