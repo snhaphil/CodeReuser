@@ -45,7 +45,7 @@ namespace CodeReuser
                         }
                         else
                         {
-                            recommendationItem.Score += Score;
+                            recommendationItem.Score += GetScore(searchItem);
                             _recommendations[fileId] = recommendationItem;
                         }
                     }
@@ -53,6 +53,12 @@ namespace CodeReuser
                 }
             }
             
+        }
+
+        private int GetScore(SearchItem searchItem)
+        {
+            var scoreByType = searchItem.Type == SearchType.Method ? Score : 20;
+            return searchItem.Accuracy == SearchAccuracy.Accurate ? scoreByType * 2 : scoreByType;
         }
 
         private void CleanIfNeeded(SearchItem searchItem)

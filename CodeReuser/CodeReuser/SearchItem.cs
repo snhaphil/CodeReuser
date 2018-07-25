@@ -12,15 +12,11 @@ namespace CodeReuser
         {
             Type = type;
             Name = name;
-        }
-
-        public SearchItem(SearchItem item)
-        {
-            Type = item.Type;
-            Name = item.Name;
+            Accuracy = SearchAccuracy.Accurate;
         }
 
         public SearchType Type;
+        public SearchAccuracy Accuracy;
         public string Name;
 
         public static SearchItem EmptySearchItem = new SearchItem(SearchType.None, string.Empty);
@@ -29,5 +25,11 @@ namespace CodeReuser
         {
             return Type == EmptySearchItem.Type && Name == EmptySearchItem.Name;
         }
+    }
+
+    public enum SearchAccuracy
+    {
+        Accurate,
+        Astrix
     }
 }
